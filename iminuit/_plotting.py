@@ -87,7 +87,7 @@ def mncontour_grid(self, x, y, numpoints=20, nsigma=2, sigma_res=4, bins=100, ed
             warnings.warn(RuntimeWarning('Fail mncontour for %s, %s, sigma=%f'%(x,y,this_sig)))
             continue
         
-        xp, yp = zip(*pts)
+        xp, yp = list(zip(*pts))
         xps.append(xp)
         yps.append(yp)
         dfcn.append([this_sig]*len(pts))
@@ -136,7 +136,7 @@ def draw_mncontour(self, x, y, bins=100, nsigma=2, numpoints=20, sig_res=4):
     xgrid, ygrid, g, r = mncontour_grid(self, x, y, numpoints, nsigma, sig_res, bins)
     #g[g.mask] = nsigma+1 #remove the mask
 
-    CS = plt.contour(xgrid, ygrid, g, range(1,nsigma+1))
+    CS = plt.contour(xgrid, ygrid, g, list(range(1,nsigma+1)))
     plt.clabel(CS, inline=1, fontsize=10)
     plt.xlabel(x)
     plt.ylabel(y)

@@ -12,7 +12,7 @@ __all__ = [
     'arguments_from_docstring',
 ]
 import inspect
-import StringIO
+import io
 import re
 
 
@@ -39,7 +39,7 @@ def arguments_from_docstring(doc):
     """
     if doc is None:
         raise RuntimeError('__doc__ is None')
-    sio = StringIO.StringIO(doc.lstrip())
+    sio = io.StringIO(doc.lstrip())
     #care only the firstline
     #docstring can be long
     line = sio.readline()
@@ -59,10 +59,10 @@ def arguments_from_docstring(doc):
         #ex: int x= True
         tmp = s.split('=')[0].split()[-1]
         #clean up non _+alphanum character
-        ret.append(''.join(filter(lambda x: str.isalnum(x) or x=='_', tmp)))
+        ret.append(''.join([x for x in tmp if str.isalnum(x) or x=='_']))
         #re.compile(r'[\s|\[]*(\w+)(?:\s*=\s*.*)')
         #ret += self.docstring_kwd_re.findall(s)
-    ret = filter(lambda x: x!='', ret)
+    ret = [x for x in ret if x!='']
 
     if len(ret)==0:
         raise RuntimeError('Your doc is unparsable\n'+doc)
@@ -89,41 +89,41 @@ def better_arg_spec(f, verbose=False):
     """
 
     try:
-        vnames = f.func_code.co_varnames
+        vnames = f.__code__.co_varnames
         #bound method and fake function will be None
         if is_bound(f):
             #bound method dock off self
-            return list(vnames[1:f.func_code.co_argcount])
+            return list(vnames[1:f.__code__.co_argcount])
         else:
             #unbound and fakefunc
-            return list(vnames[:f.func_code.co_argcount])
+            return list(vnames[:f.__code__.co_argcount])
     except Exception as e:
         if verbose:
-            print e #this might not be such a good dea.
-            print "f.func_code.co_varnames[:f.func_code.co_argcount] fails"
+            print(e) #this might not be such a good dea.
+            print("f.func_code.co_varnames[:f.func_code.co_argcount] fails")
         #using __call__ funccode
 
     try:
         #vnames = f.__call__.func_code.co_varnames
-        return list(f.__call__.func_code.co_varnames[1:f.__call__.func_code.co_argcount])
+        return list(f.__call__.__code__.co_varnames[1:f.__call__.__code__.co_argcount])
     except Exception as e:
         if verbose:
-            print e #this too
-            print "f.__call__.func_code.co_varnames[1:f.__call__.func_code.co_argcount] fails"
+            print(e) #this too
+            print("f.__call__.func_code.co_varnames[1:f.__call__.func_code.co_argcount] fails")
 
     try:
         return list(inspect.getargspec(f.__call__)[0][1:])
     except Exception as e:
         if verbose:
-            print e
-            print "inspect.getargspec(f)[0] fails"
+            print(e)
+            print("inspect.getargspec(f)[0] fails")
 
     try:
         return list(inspect.getargspec(f)[0])
     except Exception as e:
         if verbose:
-            print e
-            print "inspect.getargspec(f)[0] fails"
+            print(e)
+            print("inspect.getargspec(f)[0] fails")
 
     #now we are parsing __call__.__doc__
     #we assume that __call__.__doc__ doesn't have self
@@ -135,8 +135,8 @@ def better_arg_spec(f, verbose=False):
         return t
     except Exception as e:
         if verbose:
-            print e
-            print "fail parsing __call__.__doc__"
+            print(e)
+            print("fail parsing __call__.__doc__")
 
     #how about just __doc__
     try:
@@ -146,8 +146,8 @@ def better_arg_spec(f, verbose=False):
         return t
     except Exception as e:
         if verbose:
-            print e
-            print "fail parsing __doc__"
+            print(e)
+            print("fail parsing __doc__")
 
     raise TypeError("Unable to obtain function signature")
     return None
@@ -180,11 +180,11 @@ def fitarg_rename(fitarg, ren):
 
     """
     tmp = ren
-    if isinstance(ren, basestring):
+    if isinstance(ren, str):
         ren = lambda x: tmp + '_' + x
     ret = {}
     prefix = ['limit_', 'fix_', 'error_', ]
-    for k, v in fitarg.items():
+    for k, v in list(fitarg.items()):
         vn = k
         pf = ''
         for p in prefix:
@@ -220,27 +220,27 @@ def param_name(p):
 
 def extract_iv(b):
     """extract initial value from fitargs dictionary"""
-    return dict((k, v) for k, v in b.items() if true_param(k))
+    return dict((k, v) for k, v in list(b.items()) if true_param(k))
 
 
 def extract_limit(b):
     """extract limit from fitargs dictionary"""
-    return dict((k, v) for k, v in b.items() if k.startswith('limit_'))
+    return dict((k, v) for k, v in list(b.items()) if k.startswith('limit_'))
 
 
 def extract_error(b):
     """extract error from fitargs dictionary"""
-    return dict((k, v) for k, v in b.items() if k.startswith('error_'))
+    return dict((k, v) for k, v in list(b.items()) if k.startswith('error_'))
 
 
 def extract_fix(b):
     """extract fix attribute from fitargs dictionary"""
-    return dict((k, v) for k, v in b.items() if k.startswith('fix_'))
+    return dict((k, v) for k, v in list(b.items()) if k.startswith('fix_'))
 
 
 def remove_var(b, exclude):
     """exclude variable in exclude list from b"""
-    return dict((k, v) for k, v in b.items() if param_name(k) not in exclude)
+    return dict((k, v) for k, v in list(b.items()) if param_name(k) not in exclude)
 
 
 def make_func_code(params=None):

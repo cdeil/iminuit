@@ -34,7 +34,7 @@ class Func1:
 
 class Func2:
     def __init__(self):
-        self.func_code = Func_Code(['x', 'y'])
+        self.__code__ = Func_Code(['x', 'y'])
 
     def __call__(self, *arg):
         return (arg[0]-2.)**2 + (arg[1]-5.)**2 + 10
@@ -56,7 +56,7 @@ def functesthelper(f):
     m = Minuit(f, print_level=0, pedantic=False)
     m.migrad()
     val = m.values
-    print val
+    print(val)
     assert_almost_equal(val['x'], 2.)
     assert_almost_equal(val['y'], 5.)
     assert_almost_equal(m.fval, 10.)

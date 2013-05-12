@@ -1,4 +1,4 @@
-from color import Gradient
+from .color import Gradient
 
 
 class LatexTable:
@@ -79,7 +79,7 @@ class LatexTable:
             second = '\\%s'%parts[1] if parts[1] in self.latex_kwd else parts[1]
             return r'$%s_{%s}$'%(first, second)
         else: #a_xxx_yyy_zzz to a xxx $yyy_{zzz}$
-            textpart = map(self._convert_smart_latex, parts[:-2])
+            textpart = list(map(self._convert_smart_latex, parts[:-2]))
             textpart = ' '.join(textpart)
             latexpart = self._convert_smart_latex('_'.join(parts[-2:]))
             return textpart+' '+latexpart
@@ -96,13 +96,13 @@ class LatexTable:
     def _prepare(self): #return list of list
         ret = []
         if self.headers:
-            tmp = map(self._format, self.headers)
+            tmp = list(map(self._format, self.headers))
             if self.rotate_header:
-                tmp = map(lambda x: '\\rotatebox{90}{%s}'%x, tmp)
+                tmp = ['\\rotatebox{90}{%s}'%x for x in tmp]
 
             ret.append(tmp)
         for x in self.data:
-            ret.append(map(self._format, x))
+            ret.append(list(map(self._format, x)))
         return ret
 
     def __str__(self):
@@ -116,7 +116,7 @@ class LatexTable:
         ret += hline
         tdata = self._prepare()
         #decorate it
-        for (i, j), c in self.cell_color.items():
+        for (i, j), c in list(self.cell_color.items()):
             tdata[i][j] = '\\cellcolor' + self._xcolor_from_tuple(c) +\
                           ' ' + tdata[i][j]
 
@@ -149,7 +149,7 @@ class LatexFactory:
         table = LatexTable(headers=headers, data=data, rotate_header=True,
                            latex_map=latex_map)
         table.float_format = '%3.2f'
-        for (i, j), c in color.items():
+        for (i, j), c in list(color.items()):
             table.set_cell_color(i, j, c)
         return table
 

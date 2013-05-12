@@ -12,7 +12,7 @@ class ConsoleFrontend:
         goaledm = 0.0001*tolerance*fmin.up if tolerance is not None else ''
         #despite what the doc said the code is actually 1e-4
         #http://wwwasdoc.web.cern.ch/wwwasdoc/hbook_html3/node125.html
-        flatlocal = dict(locals().items()+fmin.__dict__.items())
+        flatlocal = dict(list(locals().items())+list(fmin.__dict__.items()))
         info1 = 'fval = %(fval)r | total call = %(ncalls)r | ncalls = %(nfcn)r\n' %\
                 flatlocal
         info2 = 'edm = %(edm)r (Goal: %(goaledm)r) | up = %(up)r\n' % flatlocal
@@ -42,10 +42,10 @@ class ConsoleFrontend:
                     '',
                     fmin.has_reached_call_limit)+'\n'
 
-        print hline + info1 + info2 +\
+        print((hline + info1 + info2 +\
             hline + header1 + hline + status1 +\
             hline + header2 + hline+ status2 +\
-            hline
+            hline))
 
     def print_merror(self, vname, smerr):
         """print minos error for varname"""
@@ -76,7 +76,7 @@ class ConsoleFrontend:
                     str(smerr.lower_new_min),
                     str(smerr.upper_new_min))
         hline = '-'*len(error)+'\n'
-        print hline +\
+        print((hline +\
               summary +\
               hline +\
               error +\
@@ -84,7 +84,7 @@ class ConsoleFrontend:
               at_limit +\
               max_fcn +\
               new_min +\
-              hline
+              hline))
 
     def print_param(self, mps, merr=None, float_format=None):
         """Print parameter states
@@ -117,7 +117,7 @@ class ConsoleFrontend:
         blank = ' '*8
 
         ret = hline+header+hline
-        for i, (v, mp) in enumerate(zip(vnames, mps)):
+        for i, (v, mp) in enumerate(list(zip(vnames, mps))):
             tmp = [i, v]
 
             tmp.append(nfmt.format(mp.value))
@@ -135,19 +135,19 @@ class ConsoleFrontend:
             line = linefmt.format(*tmp)
             ret+=line
         ret+=hline
-        print ret
+        print(ret)
 
     def print_banner(self, cmd):
         """show banner of command"""
         ret = '*'*50+'\n'
         ret += '*{:^48}*'.format(cmd)+'\n'
         ret += '*'*50+'\n'
-        print ret
+        print(ret)
 
     def print_matrix(self, vnames, matrix):
         """TODO: properly implement this"""
-        print vnames
-        print matrix
+        print(vnames)
+        print(matrix)
         maxlen = max(len(v) for v in vnames)
         narg = len(matrix)
         vfmt = '%%%ds'%maxlen
@@ -158,13 +158,13 @@ class ConsoleFrontend:
         header = vblank+' '*4+'  | '+(dfmt*narg)%tuple(range(narg))+'\n'
         blank_line = '-'*len(header)+'\n'
         tmp += header + blank_line
-        for i, (v, row) in enumerate(zip(vnames, matrix)):
+        for i, (v, row) in enumerate(list(zip(vnames, matrix))):
             fmt = '%3.2f '*narg
             head = (vfmt+' %4d | ')%(v, i)
             content = (fmt)%tuple(row)+'\n'
             tmp += head + content
         tmp += blank_line
-        print tmp
+        print(tmp)
 
     def print_hline(self):
-        print '*'*70
+        print(('*'*70))

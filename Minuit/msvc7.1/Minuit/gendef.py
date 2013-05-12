@@ -18,13 +18,13 @@ def genfile( fname ) :
   
 #----------------------------------------------------------------------------------
 def usage() :
-  print 'Usage:'
-  print '  gendef [object/library file] [options]'
-  print 'Try "gendef --help" for more information.'
+  print('Usage:')
+  print('  gendef [object/library file] [options]')
+  print('Try "gendef --help" for more information.')
   sys.exit()
 #----------------------------------------------------------------------------------
 def help() :
-  print """Generates Module-Definition (.def) File\n
+  print("""Generates Module-Definition (.def) File\n
   print 'Usage:'
   print '  gendef [object/library file] [options]'
   Options:
@@ -32,13 +32,13 @@ def help() :
        Print this help\n
      -o, --output=
        Output file\n 
-   """ 
+   """) 
   sys.exit()
 #----------------------------------------------------------------------------------
 def main() :
   import getopt
   if len(sys.argv) < 2 :
-    print 'No object/library file as input'
+    print('No object/library file as input')
     usage()
   if sys.argv[1][0] == '-' :
     infile  = None  

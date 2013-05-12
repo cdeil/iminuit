@@ -42,7 +42,7 @@ def test_call():
 #fake func
 class Func2:
     def __init__(self):
-        self.func_code = Func_Code(['x','y'])
+        self.__code__ = Func_Code(['x','y'])
     def __call__(self,*arg):
         return (arg[0]-2.)**2 + (arg[1]-5.)**2 + 10
 

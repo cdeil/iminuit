@@ -1,10 +1,10 @@
 __all__ = ['HtmlFrontend']
 from IPython.core.display import display_html
-from util import Struct
+from .util import Struct
 import random
-from latex import LatexFactory
+from .latex import LatexFactory
 import string
-from color import Gradient
+from .color import Gradient
 
 good_style = 'background-color:#92CCA6'
 bad_style = 'background-color:#FF7878'
@@ -62,7 +62,7 @@ class HtmlFrontend:
         description for each item."""
         goaledm = 0.0001*tolerance*sfmin.up
         style = fmin_style(sfmin)
-        header = u"""
+        header = """
         <table>
             <tr>
                 <td title="Minimum value of function">FCN = {sfmin.fval}</td>
@@ -77,7 +77,7 @@ class HtmlFrontend:
             </tr>
         </table>
         """.format(**locals())
-        status = u"""
+        status = """
         <table>
             <tr>
                 <td align="center" title="Validity of the migrad call">Valid</td>

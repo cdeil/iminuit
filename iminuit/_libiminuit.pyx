@@ -4,15 +4,15 @@ from libcpp.vector cimport vector
 from libcpp.string cimport string
 from cpython cimport exc
 #from libcpp import bool
-from util import *
+from .util import *
 from warnings import warn
 from cython.operator cimport dereference as deref
 from libc.math cimport sqrt
 from pprint import pprint
-from ConsoleFrontend import ConsoleFrontend
-from iminuit_warnings import *
-from latex import LatexFactory
-import _plotting
+from .ConsoleFrontend import ConsoleFrontend
+from .iminuit_warnings import *
+from .latex import LatexFactory
+from . import _plotting
 include "Lcg_Minuit.pxi"
 include "Minuit2Struct.pxi"
 import array
@@ -1215,7 +1215,7 @@ cdef class Minuit:
         """
         try:
             __IPYTHON__
-            from HtmlFrontend import HtmlFrontend
+            from .HtmlFrontend import HtmlFrontend
             return HtmlFrontend()
         except NameError:
             return ConsoleFrontend()
